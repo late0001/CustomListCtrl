@@ -183,6 +183,8 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CliDlg.h" />
+    <ClInclude Include="EfuseDlg.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="ListCtrlEdit.h" />
     <ClInclude Include="Mango.h" />
@@ -192,6 +194,8 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CliDlg.cpp" />
+    <ClCompile Include="EfuseDlg.cpp" />
     <ClCompile Include="ListCtrlEdit.cpp" />
     <ClCompile Include="Mango.cpp" />
     <ClCompile Include="MangoDlg.cpp" />

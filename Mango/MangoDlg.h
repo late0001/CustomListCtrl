@@ -3,8 +3,8 @@
 //
 
 #pragma once
-#include "ListCtrlEdit.h"
-
+#include "EfuseDlg.h"
+#include "CliDlg.h"
 // CMangoDlg 对话框
 class CMangoDlg : public CDialogEx
 {
@@ -32,6 +32,10 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
-	CEditListCtrl m_listCtrl;
-	afx_msg void OnCustomdrawList1(NMHDR* pNMHDR, LRESULT* pResult);
+	CTabCtrl m_tabctrl;
+	CEfuseDlg m_efuseDlg;
+	CCliDlg m_cliDlg;
+	int m_curSelTab;
+	CDialogEx* pDlg[2];
+	afx_msg void OnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult);
 };

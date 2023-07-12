@@ -36,6 +36,12 @@
     <ClInclude Include="ListCtrlEdit.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="EfuseDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CliDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Mango.cpp">
@@ -48,6 +54,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ListCtrlEdit.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="EfuseDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CliDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

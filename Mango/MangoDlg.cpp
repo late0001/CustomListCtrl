@@ -59,14 +59,15 @@ CMangoDlg::CMangoDlg(CWnd* pParent /*=nullptr*/)
 void CMangoDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_LIST1, m_listCtrl);
+	DDX_Control(pDX, IDC_TAB1, m_tabctrl);
+
 }
 
 BEGIN_MESSAGE_MAP(CMangoDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_NOTIFY(NM_CUSTOMDRAW, IDC_LIST1, &CMangoDlg::OnCustomdrawList1)
+	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB1, &CMangoDlg::OnSelchangeTab1)
 END_MESSAGE_MAP()
 
 
@@ -101,51 +102,30 @@ BOOL CMangoDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
-	// TODO: 在此添加额外的初始化代码
-	// Style
-	DWORD dwStyle = ::GetWindowLong(m_listCtrl.GetSafeHwnd(), GWL_STYLE);
-	dwStyle |= LVS_SINGLESEL;       //只可单行选中
-	dwStyle |= LVS_SHOWSELALWAYS;   //Always show selection
-	dwStyle |= LVS_REPORT; //报告风格
-	::SetWindowLong(m_listCtrl.GetSafeHwnd(), GWL_STYLE, dwStyle);
+	m_tabctrl.InsertItem(0, _T("Efuse"));      //添加参数一选项卡 
+	m_tabctrl.InsertItem(1, _T("Cli"));      //添加参数二选项卡
+	m_efuseDlg.Create(IDD_EFUSEDLG, &m_tabctrl);
+	m_cliDlg.Create(IDD_CLIDLG, &m_tabctrl);
+	//获得IDC_TABTEST客户区大小
+	CRect rs;
+	m_tabctrl.GetClientRect(&rs);
 
-	// Extended Style
-	DWORD dwStyleEx = m_listCtrl.GetExtendedStyle();
-	dwStyleEx |= LVS_EX_GRIDLINES;        //网格线
-	dwStyleEx |= LVS_EX_FULLROWSELECT;    //整行高亮
-	dwStyleEx |= LVS_EX_CHECKBOXES;       //Item前生成check box
-	m_listCtrl.SetExtendedStyle(dwStyleEx);
-
-	// 插入列
-	m_listCtrl.InsertColumn(0, TEXT("姓名"), LVCFMT_LEFT, 100);
-	m_listCtrl.InsertColumn(1, TEXT("年龄"), LVCFMT_LEFT, 60);
-	m_listCtrl.InsertColumn(2, TEXT("性别"), LVCFMT_LEFT, 80);
-	m_listCtrl.InsertColumn(3, TEXT("上衣颜色"), LVCFMT_LEFT, 100);
-
-	//
-	int nItem = 0;
-	nItem = m_listCtrl.InsertItem(m_listCtrl.GetItemCount(), TEXT("张扬"), 0);
-	m_listCtrl.SetItemText(nItem, 1, TEXT("26"));   //子项从1开始,0代表主项
-	m_listCtrl.SetItemText(nItem, 2, TEXT("男"));
-	m_listCtrl.SetItemText(nItem, 3, TEXT("0xFF0000"));//255 数值 代表背景的颜色值
-	nItem = m_listCtrl.InsertItem(m_listCtrl.GetItemCount(), TEXT("王艳"), 0);
-	m_listCtrl.SetItemText(nItem, 1, TEXT("24"));
-	m_listCtrl.SetItemText(nItem, 2, TEXT("女"));
-	m_listCtrl.SetItemText(nItem, 3, TEXT("0x163172"));//255*256 数值 代表背景的颜色值
-	nItem = m_listCtrl.InsertItem(m_listCtrl.GetItemCount(), TEXT("李娜"), 0);
-	m_listCtrl.SetItemText(nItem, 1, TEXT("24"));
-	m_listCtrl.SetItemText(nItem, 2, TEXT("女"));
-	m_listCtrl.SetItemText(nItem, 3, TEXT("0xFF00FF"));//255+255*256 数值 代表背景的颜色值
-
-	//这些语句最好放到初始化的最后，至少要放到插入完列以后，否则需要传递列数
-	m_listCtrl.column_type();//获得列数,并初始化 各列的默认类型,不同的类型见下面的赋值语句
-	m_listCtrl.m_column_type[1] = 1;//第2列编辑框
-	m_listCtrl.m_column_type[2] = 2;//第3列组合框
-	m_listCtrl.m_column_type[3] = 3;//第4列背景变色框,文本的数值为背景的颜色数值
-
-	m_listCtrl.column_string();//初始化各列的项目内容, 组合框列的项目要单独赋值,见下面语句
-	m_listCtrl.m_column_string[2] = "男\n女\n";//第3列为性别,组合框的内容以换行符分割
-
+	//调整子对话框在父窗口中的位置
+	rs.top += 30;
+	rs.bottom -= 20;
+	rs.left += 4;
+	rs.right -= 4;
+	//把对话框对象指针保存起来
+	pDlg[0] = &m_efuseDlg;
+	pDlg[1] = &m_cliDlg;
+	//设置子对话框尺寸并移动到指定位置
+	m_efuseDlg.MoveWindow(&rs);
+	m_cliDlg.MoveWindow(&rs);
+	//显示初始页面
+	pDlg[0]->ShowWindow(SW_SHOW);
+	pDlg[1]->ShowWindow(SW_HIDE);
+	//设置默认的选项卡
+	m_tabctrl.SetCurSel(0);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -200,11 +180,14 @@ HCURSOR CMangoDlg::OnQueryDragIcon()
 
 
 
-void CMangoDlg::OnCustomdrawList1(NMHDR* pNMHDR, LRESULT* pResult)
+
+
+void CMangoDlg::OnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult)
 {
-	//LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
-	//*pResult = 0;
-	m_listCtrl.OnCustomdrawMyList(pNMHDR, pResult);
-	
+	pDlg[m_curSelTab]->ShowWindow(SW_HIDE);
+	m_curSelTab = m_tabctrl.GetCurSel();
+	//
+	pDlg[m_curSelTab]->ShowWindow(SW_SHOW);
+	*pResult = 0;
 }
