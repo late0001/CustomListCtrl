@@ -76,6 +76,7 @@ CEditListCtrl::~CEditListCtrl()
         }
         //delete m_column_string;
     }
+    if(m_column_string) delete[] m_column_string;
     m_column_string = NULL;
 
 }
@@ -271,12 +272,12 @@ void CEditListCtrl::OnCustomdrawMyList(NMHDR* pNMHDR, LRESULT* pResult)
         nCol = pLVCD->iSubItem;
         // 获取ListCtrl当前单元格的文本
         CString str = GetItemText(nRow, nCol);//m_list.
-
         m_clrText = pLVCD->clrText;//设置前景文本色
         m_clrTextBk = pLVCD->clrTextBk;//设置背景色
         if (m_column_type[nCol] == 3)//可变背景列
         {
-            m_clrTextBk = (DWORD)_ttoi(str);
+            m_clrTextBk = (DWORD)_ttoi(str); 
+            
         }
         pLVCD->clrText = m_clrText;//设置前景文本色
         pLVCD->clrTextBk = m_clrTextBk;//设置背景色
