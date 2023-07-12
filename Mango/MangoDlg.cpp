@@ -120,22 +120,22 @@ BOOL CMangoDlg::OnInitDialog()
 	m_listCtrl.InsertColumn(0, TEXT("姓名"), LVCFMT_LEFT, 100);
 	m_listCtrl.InsertColumn(1, TEXT("年龄"), LVCFMT_LEFT, 60);
 	m_listCtrl.InsertColumn(2, TEXT("性别"), LVCFMT_LEFT, 80);
-	m_listCtrl.InsertColumn(3, TEXT("上衣颜色"), LVCFMT_LEFT, 80);
+	m_listCtrl.InsertColumn(3, TEXT("上衣颜色"), LVCFMT_LEFT, 100);
 
 	//
 	int nItem = 0;
 	nItem = m_listCtrl.InsertItem(m_listCtrl.GetItemCount(), TEXT("张扬"), 0);
 	m_listCtrl.SetItemText(nItem, 1, TEXT("26"));   //子项从1开始,0代表主项
 	m_listCtrl.SetItemText(nItem, 2, TEXT("男"));
-	m_listCtrl.SetItemText(nItem, 3, TEXT("255"));//255 数值 代表背景的颜色值
+	m_listCtrl.SetItemText(nItem, 3, TEXT("0xFF0000"));//255 数值 代表背景的颜色值
 	nItem = m_listCtrl.InsertItem(m_listCtrl.GetItemCount(), TEXT("王艳"), 0);
 	m_listCtrl.SetItemText(nItem, 1, TEXT("24"));
 	m_listCtrl.SetItemText(nItem, 2, TEXT("女"));
-	m_listCtrl.SetItemText(nItem, 3, TEXT("65280"));//255*256 数值 代表背景的颜色值
+	m_listCtrl.SetItemText(nItem, 3, TEXT("0x163172"));//255*256 数值 代表背景的颜色值
 	nItem = m_listCtrl.InsertItem(m_listCtrl.GetItemCount(), TEXT("李娜"), 0);
 	m_listCtrl.SetItemText(nItem, 1, TEXT("24"));
 	m_listCtrl.SetItemText(nItem, 2, TEXT("女"));
-	m_listCtrl.SetItemText(nItem, 3, TEXT("65535"));//255+255*256 数值 代表背景的颜色值
+	m_listCtrl.SetItemText(nItem, 3, TEXT("0xFF00FF"));//255+255*256 数值 代表背景的颜色值
 
 	//这些语句最好放到初始化的最后，至少要放到插入完列以后，否则需要传递列数
 	m_listCtrl.column_type();//获得列数,并初始化 各列的默认类型,不同的类型见下面的赋值语句

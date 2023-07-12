@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "ListCtrlEdit.h"
+#define MAKEDWORD(a, b, c) ((a) << 16 | (b) << 8 | (c)  )
+
 #define WM_USER_EDIT_END WM_USER+101
 // CListCtrlEdit
 IMPLEMENT_DYNAMIC(CListCtrlEdit, CEdit)
@@ -268,18 +270,33 @@ void CEditListCtrl::OnCustomdrawMyList(NMHDR* pNMHDR, LRESULT* pResult)
     {
         COLORREF m_clrText, m_clrTextBk;//前景色，背景色
         int nRow, nCol;//行 ， 列
+        TCHAR clrtxt[256] = { 0 };
+        DWORD clr = 0;
+        
+        int i, k;
         nRow = static_cast <int>(pLVCD->nmcd.dwItemSpec);
         nCol = pLVCD->iSubItem;
         // 获取ListCtrl当前单元格的文本
-        CString str = GetItemText(nRow, nCol);//m_list.
+        //CString str = GetItemText(nRow, nCol);//m_list.
+        if (m_column_type[nCol] == 3) {
+            int t = 0;
+            GetItemText(nRow, nCol, clrtxt, 256);
+            BYTE* bclr;
+            _stscanf(clrtxt, _T("0x%06x"), &clr);
+            clr = MAKEDWORD(clr & 0xff, clr >> 8 & 0xff, clr >> 16 & 0xff);
+
+        }
+       
+        
         m_clrText = pLVCD->clrText;//设置前景文本色
         m_clrTextBk = pLVCD->clrTextBk;//设置背景色
+        pLVCD->clrText = m_clrText;//设置前景文本色
         if (m_column_type[nCol] == 3)//可变背景列
         {
-            m_clrTextBk = (DWORD)_ttoi(str); 
-            
+            m_clrTextBk = clr;//(DWORD)_tcstoul(str, NULL, 16); 
+            pLVCD->clrText = 0xFFFFFF;//
         }
-        pLVCD->clrText = m_clrText;//设置前景文本色
+        
         pLVCD->clrTextBk = m_clrTextBk;//设置背景色
 
         *pResult = CDRF_DODEFAULT;
@@ -337,13 +354,18 @@ void CEditListCtrl::OnLButtonDblClk(UINT nFlags, CPoint point)
     case 3://listCtrl_STATIC
     {
         CString str = GetItemText(nItem, nSubItem);
-        COLORREF clr = _ttol(str);//RGB(255,0,0);
+        COLORREF clr = _tcstoul(str, NULL, 16);//RGB(255,0,0);
         CColorDialog  dlg;
         dlg.m_cc.lpCustColors = &clr;//原来颜色
+        PBYTE bclr;
+        DWORD color = 0;
+        int t = 0;
         if (IDOK == dlg.DoModal())
         {
-            clr = dlg.GetColor();//新选择的颜色
-            str.Format(L"%ld", clr);
+            int i = 0;
+            clr = dlg.GetColor();//新选择的颜色  
+            
+            str.Format(_T("0x%06x"), MAKEDWORD(clr & 0xff, clr >> 8 & 0xff, clr >> 16 & 0xff));
             SetItemText(nItem, nSubItem, str);//颜色数值设置为单元格的文本
             this->Invalidate();//刷新列表
         }
