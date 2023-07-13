@@ -7,11 +7,20 @@
 #include "Mango.h"
 #include "MangoDlg.h"
 #include "afxdialogex.h"
+#include "dbt.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+
+TCHAR   szDbgMsg[256];
+#define LOGD(fmt,...)				\
+	do {										\
+  		_stprintf(szDbgMsg, _T("[Mango]: ")); OutputDebugString(szDbgMsg);	\
+		_stprintf(szDbgMsg, fmt, __VA_ARGS__); OutputDebugString(szDbgMsg);\
+  		_stprintf(szDbgMsg, _T("                     [%s, line #(%d)]\n"), TEXT(__FUNCTION__), __LINE__);OutputDebugString(szDbgMsg);\
+	} while(0)
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
@@ -68,6 +77,7 @@ BEGIN_MESSAGE_MAP(CMangoDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB1, &CMangoDlg::OnSelchangeTab1)
+	ON_MESSAGE(WM_DEVICECHANGE, &CMangoDlg::OnDevicechange)
 END_MESSAGE_MAP()
 
 
@@ -102,6 +112,7 @@ BOOL CMangoDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
+	RegisterDevice(GetSafeHwnd());
 	m_tabctrl.InsertItem(0, _T("Efuse"));      //添加参数一选项卡 
 	m_tabctrl.InsertItem(1, _T("Cli"));      //添加参数二选项卡
 	m_efuseDlg.Create(IDD_EFUSEDLG, &m_tabctrl);
@@ -190,4 +201,58 @@ void CMangoDlg::OnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult)
 	//
 	pDlg[m_curSelTab]->ShowWindow(SW_SHOW);
 	*pResult = 0;
+}
+
+bool RegisterDevice(HANDLE hwnd)
+{
+	const GUID GUID_DEVINTERFACE_LIST[] = {
+		{ 0xA5DCBF10, 0x6530, 0x11D2, { 0x90, 0x1F, 0x00, 0xC0, 0x4F, 0xB9, 0x51, 0xED } },
+		//{ 0x53f56307, 0xb6bf, 0x11d0, { 0x94, 0xf2, 0x00, 0xa0, 0xc9, 0x1e, 0xfb, 0x8b } },
+		//{ 0x4D1E55B2, 0xF16F, 0x11CF, { 0x88, 0xCB, 0x00, 0x11, 0x11, 0x00, 0x00, 0x30 } }, /* HID */
+		//GUID_NDIS_LAN_CLASS
+		//{0XAD498944, 0X762F, 0X11D0, { 0X8D,0XCB,0X00,0X00,0X4F,0XC3,0X35,0X8C }}
+	};
+
+	int i;
+	DEV_BROADCAST_DEVICEINTERFACE NotificationFilter;
+	ZeroMemory(&NotificationFilter, sizeof(NotificationFilter));
+	NotificationFilter.dbcc_size = sizeof(DEV_BROADCAST_DEVICEINTERFACE);
+	NotificationFilter.dbcc_devicetype = DBT_DEVTYP_DEVICEINTERFACE;
+	for (int i = 0; i < sizeof(GUID_DEVINTERFACE_LIST) / sizeof(GUID); i++)
+	{
+
+		NotificationFilter.dbcc_classguid = GUID_DEVINTERFACE_LIST[i];
+		HDEVNOTIFY hDevNotify = RegisterDeviceNotification(hwnd, &NotificationFilter, DEVICE_NOTIFY_WINDOW_HANDLE);
+		if (!hDevNotify)
+		{
+			int Err = GetLastError();
+			LOGD(_T("Register Device Notification Failed\n"));
+		}
+
+	}
+
+	return true;
+}
+
+afx_msg LRESULT CMangoDlg::OnDevicechange(WPARAM wParam, LPARAM lParam)
+{
+	if ((DWORD)wParam == DBT_DEVNODES_CHANGED) {
+		//printf("dev nodes change LPARAM = %x\n", lp);
+	}
+	if ((DWORD)wParam == DBT_DEVICEARRIVAL) {
+		DEV_BROADCAST_DEVICEINTERFACE* p = (DEV_BROADCAST_DEVICEINTERFACE*)lParam;
+		if (p->dbcc_devicetype == DBT_DEVTYP_DEVICEINTERFACE) {
+			LOGD(_T("有新网卡插入\n"));
+			Sleep(2000);
+			//AdapterRefresh();
+		}
+
+	}
+	else if ((DWORD)wParam == DBT_DEVICEREMOVECOMPLETE) {
+		DEV_BROADCAST_DEVICEINTERFACE* p = (DEV_BROADCAST_DEVICEINTERFACE*)lParam;
+		if (p->dbcc_devicetype == DBT_DEVTYP_DEVICEINTERFACE) {
+			LOGD(_T("啊……网卡被拔掉了\n"));
+		}
+	}
+	return 0;
 }

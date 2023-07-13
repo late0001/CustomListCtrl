@@ -38,4 +38,8 @@ public:
 	int m_curSelTab;
 	CDialogEx* pDlg[2];
 	afx_msg void OnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult);
+protected:
+	afx_msg LRESULT OnDevicechange(WPARAM wParam, LPARAM lParam);
 };
+
+bool RegisterDevice(HANDLE hwnd);
