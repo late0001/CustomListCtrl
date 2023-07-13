@@ -3,5 +3,3 @@
 #include "pch.h"
 
 // 当使用预编译的头时，需要使用此源文件，编译才能成功。
-TCHAR   szDbgMsg[256];
-char   szDbgMsgA[256];

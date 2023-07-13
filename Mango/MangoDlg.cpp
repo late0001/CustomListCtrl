@@ -8,19 +8,14 @@
 #include "MangoDlg.h"
 #include "afxdialogex.h"
 #include "dbt.h"
+#include "rlrelative.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
 
-TCHAR   szDbgMsg[256];
-#define LOGD(fmt,...)				\
-	do {										\
-  		_stprintf(szDbgMsg, _T("[Mango]: ")); OutputDebugString(szDbgMsg);	\
-		_stprintf(szDbgMsg, fmt, __VA_ARGS__); OutputDebugString(szDbgMsg);\
-  		_stprintf(szDbgMsg, _T("                     [%s, line #(%d)]\n"), TEXT(__FUNCTION__), __LINE__);OutputDebugString(szDbgMsg);\
-	} while(0)
+
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
@@ -70,6 +65,7 @@ void CMangoDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_TAB1, m_tabctrl);
 
+	DDX_Control(pDX, IDC_STATIC1, m_statusLabel1);
 }
 
 BEGIN_MESSAGE_MAP(CMangoDlg, CDialogEx)
@@ -80,7 +76,20 @@ BEGIN_MESSAGE_MAP(CMangoDlg, CDialogEx)
 	ON_MESSAGE(WM_DEVICECHANGE, &CMangoDlg::OnDevicechange)
 END_MESSAGE_MAP()
 
+CMangoDlg* pMangoDlg = NULL;
+BOOL PrintStatus(CString str)
+{
+	if (pMangoDlg) {
+		pMangoDlg->PrintStatus(str);
+		return true;
+	}
+	return false;
+}
 
+void CMangoDlg::PrintStatus(CString str)
+{
+	m_statusLabel1.SetWindowText(str);
+}
 // CMangoDlg 消息处理程序
 
 BOOL CMangoDlg::OnInitDialog()
@@ -111,7 +120,9 @@ BOOL CMangoDlg::OnInitDialog()
 	//  执行此操作
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
-
+	
+	pMangoDlg = this;
+	AdapterRefresh();
 	RegisterDevice(GetSafeHwnd());
 	m_tabctrl.InsertItem(0, _T("Efuse"));      //添加参数一选项卡 
 	m_tabctrl.InsertItem(1, _T("Cli"));      //添加参数二选项卡
@@ -244,7 +255,7 @@ afx_msg LRESULT CMangoDlg::OnDevicechange(WPARAM wParam, LPARAM lParam)
 		if (p->dbcc_devicetype == DBT_DEVTYP_DEVICEINTERFACE) {
 			LOGD(_T("有新网卡插入\n"));
 			Sleep(2000);
-			//AdapterRefresh();
+			AdapterRefresh();
 		}
 
 	}
@@ -252,6 +263,7 @@ afx_msg LRESULT CMangoDlg::OnDevicechange(WPARAM wParam, LPARAM lParam)
 		DEV_BROADCAST_DEVICEINTERFACE* p = (DEV_BROADCAST_DEVICEINTERFACE*)lParam;
 		if (p->dbcc_devicetype == DBT_DEVTYP_DEVICEINTERFACE) {
 			LOGD(_T("啊……网卡被拔掉了\n"));
+			PrintStatus(_T("未检测到设备"));
 		}
 	}
 	return 0;

@@ -40,6 +40,11 @@ public:
 	afx_msg void OnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult);
 protected:
 	afx_msg LRESULT OnDevicechange(WPARAM wParam, LPARAM lParam);
+public:
+	CStatic m_statusLabel1;
+	void PrintStatus(CString str);
+
 };
 
 bool RegisterDevice(HANDLE hwnd);
+BOOL PrintStatus(CString str);
