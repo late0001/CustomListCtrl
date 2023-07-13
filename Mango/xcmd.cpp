@@ -175,3 +175,25 @@ int cli_read_efuse(int argc, char* argv[])
 
 	return 0;
 }
+
+int cli_read_efuse()
+{
+	int dargc;
+	char dargvBuf[MaxDbgArgvNum][MaxCLIBuf];
+	char* dargv[MaxDbgArgvNum];
+	char strRCon[] = "cmd 27 0 256";
+	char strCmd[MaxCLIBuf] = "";
+	int i;
+
+	for (i = 0; i < MaxDbgArgvNum; i++)
+		dargv[i] = &dargvBuf[i][0];
+
+	
+	strcpy(strCmd, strRCon);
+	
+
+	parseToken(&dargc, dargv, strCmd, strlen(strCmd));
+	dcmd_ParseToDriver(dargc, dargv, 0, 0);
+
+	return 0;
+}

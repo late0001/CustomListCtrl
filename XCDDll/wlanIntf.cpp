@@ -198,13 +198,13 @@ CWlanInterfaces::CWlanInterfaces()
 		
         	try
 		{
-			tmp = new TCHAR[_tcsclen ((const char *)strGuid)+1];
+			tmp = new TCHAR[_tcsclen ((TCHAR*)strGuid)+1];
 			ptmpGuidValue = new GUID;
 			desc = new WCHAR[256];
 			connectiontype = new int;
 			//CString tempStr;
 
-			_tcscpy_s(tmp, _tcsclen((TCHAR *)strGuid)+1, (const char *)strGuid);
+			_tcscpy_s(tmp, _tcsclen((TCHAR *)strGuid)+1, (TCHAR *)strGuid);
 			*ptmpGuidValue =  pIntfList->InterfaceInfo[i].InterfaceGuid;
 			//tempStr = pIntfList->InterfaceInfo[i].strInterfaceDescription;
 			//_tcscpy_s(desc, 256, (const char *)pIntfList->InterfaceInfo[i].strInterfaceDescription);

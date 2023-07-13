@@ -120,7 +120,9 @@ BOOL CMangoDlg::OnInitDialog()
 	//  执行此操作
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
-	
+	//_CrtSetBreakAlloc(153);
+
+	//_CrtDumpMemoryLeaks();
 	pMangoDlg = this;
 	AdapterRefresh();
 	RegisterDevice(GetSafeHwnd());
@@ -254,7 +256,7 @@ afx_msg LRESULT CMangoDlg::OnDevicechange(WPARAM wParam, LPARAM lParam)
 		DEV_BROADCAST_DEVICEINTERFACE* p = (DEV_BROADCAST_DEVICEINTERFACE*)lParam;
 		if (p->dbcc_devicetype == DBT_DEVTYP_DEVICEINTERFACE) {
 			LOGD(_T("有新网卡插入\n"));
-			Sleep(2000);
+			Sleep(1000);
 			AdapterRefresh();
 		}
 

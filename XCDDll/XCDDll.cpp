@@ -276,8 +276,8 @@ dll_FindRealtekNicsIoctl(
 
 		_stprintf_s(szExportName, _T("%s%s"), PROT_DRV_PREFIX, szBuf);
 
-		strcpy_s((char*)pAdapterList->adapter[pAdapterList->Cnt].SymbolicLink, sizeof(szExportName), szExportName);
-
+		//strcpy_s((char*)pAdapterList->adapter[pAdapterList->Cnt].SymbolicLink, sizeof(szExportName), szExportName);
+		_tcscpy_s(pAdapterList->adapter[pAdapterList->Cnt].SymbolicLink, sizeof(szExportName), szExportName);
 		cbBuf = (MAX_PATH - 1) * sizeof(TCHAR);	// You have to reset the cbBuf size before the query
 		if (RegQueryValueEx(hKey, _T("DriverDesc"), NULL, &dwType, (BYTE*)szBuf, &cbBuf) != ERROR_SUCCESS)
 		{

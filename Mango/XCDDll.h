@@ -13,7 +13,7 @@
 
 typedef struct _ADAPTER {
 	HANDLE		hFile;									///< The handle that application can use to access the lower actual adapter.
-	char		SymbolicLink[MAX_LINK_NAME_LENGTH];		///< The adapter name.
+	TCHAR		SymbolicLink[MAX_LINK_NAME_LENGTH];		///< The adapter name.
 	TCHAR		Description[MAX_DESCRIPTION_LENGTH];	///< The adapter description.
 	GUID		nicGuid;
 	UINT		ChipID;

@@ -5,7 +5,7 @@
 #include "Mango.h"
 #include "EfuseDlg.h"
 #include "afxdialogex.h"
-
+#include "xcmd.h"
 
 // CEfuseDlg 对话框
 
@@ -30,6 +30,7 @@ void CEfuseDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CEfuseDlg, CDialogEx)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_LIST1, &CEfuseDlg::OnCustomdrawList1)
+	ON_BN_CLICKED(ID_READ, &CEfuseDlg::OnBnClickedRead)
 END_MESSAGE_MAP()
 
 
@@ -124,4 +125,11 @@ void CEfuseDlg::OnCustomdrawList1(NMHDR* pNMHDR, LRESULT* pResult)
 	// TODO: 在此添加控件通知处理程序代码
 	//*pResult = 0;
 	m_listCtrl.OnCustomdrawMyList(pNMHDR, pResult);
+}
+
+
+void CEfuseDlg::OnBnClickedRead()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	cli_read_efuse();
 }

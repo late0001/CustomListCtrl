@@ -21,9 +21,8 @@ extern char   szDbgMsgA[256];
 
 #define LOGDA(fmt,...)				\
 	do {										\
-  		sprintf(szDbgMsgA, "[Mango]: "); OutputDebugStringA(szDbgMsgA);	\
 		sprintf(szDbgMsgA, fmt, __VA_ARGS__); OutputDebugStringA(szDbgMsgA);\
-  		sprintf(szDbgMsgA, "                     [%s, line #(%d)]\n", __FUNCTION__, __LINE__);OutputDebugStringA(szDbgMsgA);\
+  		/*sprintf(szDbgMsgA, "                     [%s, line #(%d)]\n", __FUNCTION__, __LINE__);OutputDebugStringA(szDbgMsgA);*/ \
 	} while(0)
 #include "CustomOid.h"	// For Realtek OID.
 #include <winsvc.h>

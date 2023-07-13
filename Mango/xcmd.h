@@ -5,6 +5,7 @@ int cli_bind_adapter(int argc, char* argv[]);
 int cli_refresh_adapter(int argc, char* argv[]);
 int cli_exit(int argc, char* argv[]);
 int cli_read_efuse(int argc, char* argv[]);
+int cli_read_efuse();
 int	parseToken(int* dargc, char** dargv, char* inBuf, int bufLen);
 void initFieldData();
 typedef struct par_hint {

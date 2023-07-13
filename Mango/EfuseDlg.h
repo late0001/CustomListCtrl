@@ -26,4 +26,5 @@ public:
 public:
 	CEditListCtrl m_listCtrl;
 	afx_msg void OnCustomdrawList1(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnBnClickedRead();
 };
