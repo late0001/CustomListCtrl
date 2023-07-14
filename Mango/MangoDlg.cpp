@@ -256,7 +256,7 @@ afx_msg LRESULT CMangoDlg::OnDevicechange(WPARAM wParam, LPARAM lParam)
 		DEV_BROADCAST_DEVICEINTERFACE* p = (DEV_BROADCAST_DEVICEINTERFACE*)lParam;
 		if (p->dbcc_devicetype == DBT_DEVTYP_DEVICEINTERFACE) {
 			LOGD(_T("有新网卡插入\n"));
-			Sleep(1000);
+			Sleep(1500);
 			AdapterRefresh();
 		}
 

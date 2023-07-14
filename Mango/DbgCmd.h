@@ -29,4 +29,26 @@ typedef struct _INTF_DBG_RETURN {
     char    dbgRtnBuf[MaxDbgArgvNum * MaxDbgArgvLen];
 } INTF_DBG_RETURN;
 
+extern INTF_DBG_SEND		ToDriver;
+extern INTF_DBG_RETURN		FromDriver;
 void dcmd_ParseToDriver(int argc, char* argv[], UINT Type, int CmdIndex);
+
+bool
+dcmd_SendDebugCmd(
+    CONTROL_INFO* pCtrlInfo,
+    int				DbgCmdLength,
+    UCHAR* InData,
+    bool			bByApi
+);
+bool
+dcmd_ReturnDebugCmd(
+    CONTROL_INFO* pCtrlInfo,
+    UCHAR* OutData,
+    bool			bByApi
+);
+bool
+dcmd_CheckDebugCmd(
+    CONTROL_INFO* pCtrlInfo,
+    int* ready,
+    bool			bByApi
+);

@@ -68,6 +68,7 @@ CEditListCtrl::CEditListCtrl()
 CEditListCtrl::~CEditListCtrl()
 {
     if (m_column_type) delete[]m_column_type;
+    if (m_column_string == NULL) return;
     for (int i = 0; i < m_column_num; i++)
     {
         //if (m_column_string[i])
@@ -281,7 +282,6 @@ void CEditListCtrl::OnCustomdrawMyList(NMHDR* pNMHDR, LRESULT* pResult)
         if (m_column_type[nCol] == 3) {
             int t = 0;
             GetItemText(nRow, nCol, clrtxt, 256);
-            BYTE* bclr;
             _stscanf(clrtxt, _T("0x%06x"), &clr);
             clr = MAKEDWORD(clr & 0xff, clr >> 8 & 0xff, clr >> 16 & 0xff);
 
@@ -291,12 +291,16 @@ void CEditListCtrl::OnCustomdrawMyList(NMHDR* pNMHDR, LRESULT* pResult)
         m_clrText = pLVCD->clrText;//设置前景文本色
         m_clrTextBk = pLVCD->clrTextBk;//设置背景色
         pLVCD->clrText = m_clrText;//设置前景文本色
-        if (m_column_type[nCol] == 3)//可变背景列
+       
+        if (nCol == 0) {
+            m_clrTextBk = 0xFF00FF;
+        }else if (m_column_type[nCol] == 3)//可变背景列
         {
             m_clrTextBk = clr;//(DWORD)_tcstoul(str, NULL, 16); 
             pLVCD->clrText = 0xFFFFFF;//
         }
-        
+        else
+            m_clrTextBk = 0xFFFFFF;
         pLVCD->clrTextBk = m_clrTextBk;//设置背景色
 
         *pResult = CDRF_DODEFAULT;
